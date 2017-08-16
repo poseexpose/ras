@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<!-- 打印查询语句 -->
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+	<mappers>
+		<mapper resource="mapper/house-mapper.xml" />
+		<mapper resource="mapper/user-mapper.xml" />
+		<mapper resource="mapper/rent-mapper.xml" />
+		<mapper resource="mapper/sell-mapper.xml"/>
+		<mapper resource="mapper/manager-mapper.xml"/>
+	</mappers>
+</configuration>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="dao.sell.SellDao">
+  	<resultMap type="entity.Sell" id="sell">
+  		<id column="sellID" property="sellID"/>
+  		<result column="sellPrice" property="sellPrice"/>
+  		<result column="orientation" property="orientation"/>
+  		<result column="unitPrice" property="unitPrice"/>
+  		<result column="firstPaid" property="firstPaid"/>
+  		<result column="pubTime" property="pubTime"/>
+  		<association property="renovation" javaType="entity.Renovation">
+  			<id column="renovationID" property="renovationID"/>
+  			<result column="renovationType" property="renovationType"/>
+  		</association>
+  		<association property="user" javaType="entity.User">
+  			<id column="userID" property="userID"/>
+  			<result column="username" property="username"/>
+  			<result column="userPwd" property="userPwd"/>
+  			<result column="userGender" property="userGender"/>
+  			<result column="userBir" property="userBir"/>
+  			<result column="userTel" property="userTel"/>
+  			<result column="nickname" property="nickname"/>
+  		</association>
+  		<association property="house" javaType="entity.House">
+  			<id column="houseID" property="houseID"/>
+  			<result column="houseName" property="houseName"/>
+  			<result column="houseAddress" property="houseAddress"/>
+  			<result column="houseEstate" property="houseEstate"/>
+  			<result column="acreage" property="acreage"/>
+  			<!-- <result column="houseType" property="houseType" /> -->
+  			<result column="houseDes" property="houseDes"/>
+  			<result column="curFloor" property="curFloor"/>
+  			<result column="totalFloor" property="totalFloor"/>
+  			<result column="area" property="area"/>
+  			<result column="bornDate" property="bornDate"/>
+  			<collection property="pics" ofType="entity.Pics">
+  				<id column="picID" property="picID"/>
+  				<result column="picSrc" property="picSrc"/>
+  			</collection>
+  		</association>
+  		<association property="houseType" javaType="entity.HouseType">
+  			<id column="houseTypeID" property="houseTypeID"/>
+  			<result column="room" property="room"/>
+  			<result column="hall" property="hall"/>
+  			<result column="toilet" property="toilet"/>
+  		</association>
+  	</resultMap>
+  
+  	<select id="querySellByCondition" parameterType="entity.Sell" resultMap="sell">
+  		select * from Sell s 
+  		left join Renovation rn on s.renovationID = rn.renovationID
+  		left join User u on s.userID = u.userID
+  		left join House h on s.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		<where>
+  			<if test="house.houseName!=''">
+  			and h.houseName like CONCAT('%',#{house.houseName},'%')
+  			</if>
+  			<if test="house.area!=null">
+  			and h.area = #{house.area}
+  			</if>
+  			<if test="houseType.room!=null">
+  			and room = #{houseType.room}
+  			</if>
+  			<if test="houseType.hall!=null">
+  			and hall = #{houseType.hall}
+  			</if>
+  			<if test="renovation.renovationID!=null">
+  			and rn.renovationID = #{renovation.renovationID}
+  			</if>
+  			<if test="orientation!=''">
+  			and s.orientation = #{orientation}
+  			</if>
+  			where publish = 1
+  		</where>
+  	</select>
+  	
+  	<select id="querySellDetail" parameterType="Integer" resultMap="sell">
+  		select * from Sell s 
+  		left join Renovation rn on s.renovationID = rn.renovationID
+  		left join User u on s.userID = u.userID
+  		left join House h on s.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+		where h.houseID = #{id} and publish = 1		
+  	</select>
+  	
+  	<select id="querySell" resultMap="sell">
+  		select * from Sell s 
+  		left join Renovation rn on s.renovationID = rn.renovationID
+  		left join User u on s.userID = u.userID
+  		left join House h on s.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		where publish = 1
+  	</select>
+  	
+  </mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="dao.house.HouseDao">
+  	<!-- <select id="" parameterType="entity.House">
+  		select * from house where houseName like CONCAT('%',#{houseName},'%')
+  	</select> -->
+  	
+  	<update id="publish">
+  		update house set publish = 1 where houseId = #{id} 
+  	</update>
+  	
+  	<update id="dePublish">
+  		update house set publish = 0 where houseId = #{id} 
+  	</update>
+  </mapper>

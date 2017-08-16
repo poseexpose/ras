@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="dao.rent.RentDao">
+  	<resultMap type="entity.Rent" id="rent">
+  		<id column="rentID" property="rentID"/>
+  		<result column="rentPrice" property="rentPrice"/>
+  		<result column="rentType" property="rentType"/>
+  		<result column="orientation" property="orientation"/>
+  		<result column="pubTime" property="pubTime"/>
+  		<association property="renovation" javaType="entity.Renovation">
+  			<id column="renovationID" property="renovationID"/>
+  			<result column="renovationType" property="renovationType"/>
+  		</association>
+  		<association property="paid" javaType="entity.Paid">
+  			<id column="paidID" property="paidID"/>
+  			<result column="paidType" property="paidType"/>
+  		</association>
+  		<association property="user" javaType="entity.User">
+  			<id column="userID" property="userID"/>
+  			<result column="username" property="username"/>
+  			<result column="userPwd" property="userPwd"/>
+  			<result column="userGender" property="userGender"/>
+  			<result column="userBir" property="userBir"/>
+  			<result column="userTel" property="userTel"/>
+  			<result column="nickname" property="nickname"/>
+  		</association>
+  		<association property="house" javaType="entity.House">
+  			<id column="houseID" property="houseID"/>
+  			<result column="houseName" property="houseName"/>
+  			<result column="houseAddress" property="houseAddress"/>
+  			<result column="houseEstate" property="houseEstate"/>
+  			<result column="acreage" property="acreage"/>
+  			<!-- <result column="houseType" property="houseType" /> -->
+  			<result column="houseDes" property="houseDes"/>
+  			<result column="curFloor" property="curFloor"/>
+  			<result column="totalFloor" property="totalFloor"/>
+  			<result column="area" property="area"/>
+  			<collection property="pics" ofType="entity.Pics">
+  				<id column="picID" property="picID"/>
+  				<result column="picSrc" property="picSrc"/>
+  			</collection>
+  		</association>
+  		<association property="houseType" javaType="entity.HouseType">
+  			<id column="houseTypeID" property="houseTypeID"/>
+  			<result column="room" property="room"/>
+  			<result column="hall" property="hall"/>
+  			<result column="toilet" property="toilet"/>
+  		</association>
+  	</resultMap>
+  
+  	<select id="queryRentByCondition" parameterType="entity.Rent" resultMap="rent">
+  		select * from Rent r 
+  		left join Renovation rn on r.renovationID = rn.renovationID
+  		left join Paid p on r.paidID = p.paidID
+  		left join User u on r.userID = u.userID
+  		left join House h on r.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		<where>
+  			<if test="house.houseName!=''">
+  			and h.houseName like CONCAT('%',#{house.houseName},'%')
+  			</if>
+  			<if test="house.area!=null">
+  			and h.area = #{house.area}
+  			</if>
+  			<if test="rentType!=null">
+  			and r.rentType=#{rentType}
+  			</if>
+  			<if test="houseType.room!=null">
+  			and room = #{houseType.room}
+  			</if>
+  			<if test="houseType.hall!=null">
+  			and hall = #{houseType.hall}
+  			</if>
+  			<if test="renovation.renovationID!=null">
+  			and rn.renovationID = #{renovation.renovationID}
+  			</if>
+  			<if test="orientation!=''">
+  			and r.orientation = #{orientation}
+  			</if>
+  			where publish = 1
+ 		</where>
+  	</select>
+  	
+  	<select id="queryRentDetail" parameterType="Integer" resultMap="rent">
+  		select * from Rent r 
+  		left join Renovation rn on r.renovationID = rn.renovationID
+  		left join Paid p on r.paidID = p.paidID
+  		left join User u on r.userID = u.userID
+  		left join House h on r.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+		where h.houseID = #{id} and publish = 1	
+  	</select>
+  	
+  	<select id="queryRent" resultMap="rent">
+  		select * from Rent r 
+  		left join Renovation rn on r.renovationID = rn.renovationID
+  		left join Paid p on r.paidID = p.paidID
+  		left join User u on r.userID = u.userID
+  		left join House h on r.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		where publish = 1
+  	</select>
+  	
+  	<select id="queryRentOn" resultMap="rent">
+  		select * from Rent r 
+  		left join Renovation rn on r.renovationID = rn.renovationID
+  		left join Paid p on r.paidID = p.paidID
+  		left join User u on r.userID = u.userID
+  		left join House h on r.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		where publish = 1
+  		order by h.houseID
+  	</select>
+  	
+  	<select id="queryRentOff" resultMap="rent">
+  		select * from Rent r 
+  		left join Renovation rn on r.renovationID = rn.renovationID
+  		left join Paid p on r.paidID = p.paidID
+  		left join User u on r.userID = u.userID
+  		left join House h on r.houseID = h.houseID
+  		left join HouseType ht on ht.houseTypeID = h.houseTypeID
+  		left join Pics pc on h.houseID = pc.houseID
+  		where publish = 0
+  		order by h.houseID
+  	</select>
+  	
+  	<!-- <insert id="rentPub" parameterMap="">
+  		insert into Rent(house.houseName,houseEstate,houseAddress,area,rentPrice,house.houseType.room,
+  		house.houseType.room,house.houseType.room
+  		)
+  	</insert> -->
+  </mapper>
